@@ -1,6 +1,6 @@
 import csv
 import operator
-from my_montage_maker import *
+from .my_montage_maker import *
 import math
 import numpy as np
 from PIL import Image, ImageDraw
@@ -120,7 +120,7 @@ class Montages:
 		montages_created = []
 		for bin in path_parents.keys():
 			montage_filename = "bin_" + str(bin)
-			print "number of images:", len(path_parents[bin])           
+			print("number of images:", len(path_parents[bin]))
 			montages_created.append(self.create_montage(path_parents[bin], montage_filename, ncols = None, nrows = None))
 		return montages_created
 
@@ -141,7 +141,7 @@ class Montages:
 
 		scale = abs(projected_features).max(0)
 		scaled = np.floor(np.array([ (p / scale) * (w/2-20,h/2-20) + (w/2,h/2) for p in projected_features]))
-		print "number of images", len(image_paths)
+		print("number of images", len(image_paths))
 		for i in range(len(image_paths)):
 		  nodeim = Image.open(image_paths[i]) 
 		  nodeim = nodeim.resize((thumb_w,thumb_h))

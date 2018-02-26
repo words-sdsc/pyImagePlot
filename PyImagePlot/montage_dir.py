@@ -38,7 +38,8 @@ for path_parent in path_parents:
     photo = (photow,photoh)
     margins = [0,0,0,0]
     padding = 0
-    inew = make_contact_sheet(image_paths,(ncols,nrows),photo,margins,padding)
+    cs_args = (image_paths,(ncols,nrows),photo,margins,padding) # porting to python3
+    inew = make_contact_sheet(cs_args)
 
     inew.save(output_path + "montage" + montage_filename + ".jpg")
 	

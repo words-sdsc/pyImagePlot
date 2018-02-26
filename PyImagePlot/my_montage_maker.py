@@ -1,9 +1,7 @@
 import glob 
 from PIL import Image
 
-def make_contact_sheet(fnames,(ncols,nrows),(photow,photoh),
-                       (marl,mart,marr,marb),
-                       padding):
+def make_contact_sheet(*args):
     """\
     Make a contact sheet from a group of filenames:
 
@@ -23,6 +21,12 @@ def make_contact_sheet(fnames,(ncols,nrows),(photow,photoh),
 
     returns a PIL image object.
     """
+    
+    # Port to Python3
+    fnames, ndims, photodims, maargs, padding = args
+    ncols,nrows = ndims
+    photow,photoh = photodims
+    marl,mart,marr,marb = maargs
 
     # Calculate the size of the output image, based on the
     #  photo thumb sizes, margins, and padding

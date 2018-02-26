@@ -87,7 +87,7 @@ PyMontage Menu
 		self.montage.input_data(src_path = input_CSV, dest_path = output_dir)
 		print("Creating image histogram...")
 		created_img_hist = self.montage.create_image_hist()
-        created_img_hist.save(output_dir+"hist.png")
+        	created_img_hist.save(output_dir+"hist.png")
 
 
 	def quit(self):
