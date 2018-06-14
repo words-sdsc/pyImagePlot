@@ -12,11 +12,12 @@ import pandas as pd
 
 class Montages:
 	'''Create and manage montages'''
-	def __init__(self, ncl, src_path ="", dest_path = "", image_src_path = ""):
+	def __init__(self, ncl, max_height, src_path ="", dest_path = "", image_src_path = ""):
 		self.photow = 75
 		self.photoh = 75
 		#self.photow = 12000
 		#self.photoh = 1000
+		self.max_height = max_height        
 		self.ncl = ncl     
 		self.src_path = src_path
 		self.dest_path = dest_path
@@ -192,6 +193,8 @@ class Montages:
 			#getting the tallest height
 			if height<length:
 				height=length
+		if height>self.max_height:
+			height = self.max_height
 		#getting the total number of bins
 		NumBins = len(bins)
 		#size of each image
