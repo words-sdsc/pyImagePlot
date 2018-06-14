@@ -12,11 +12,12 @@ import pandas as pd
 
 class Montages:
 	'''Create and manage montages'''
-	def __init__(self, src_path ="", dest_path = "", image_src_path = ""):
+	def __init__(self, ncl, src_path ="", dest_path = "", image_src_path = ""):
 		self.photow = 75
 		self.photoh = 75
 		#self.photow = 12000
 		#self.photoh = 1000
+		self.ncl = ncl     
 		self.src_path = src_path
 		self.dest_path = dest_path
 		self.image_src_path  = image_src_path
@@ -41,6 +42,9 @@ class Montages:
 
 
 	def create_montage(self, image_paths, montage_filename = "", ncols = None, nrows = None):
+		if (len(image_paths) == 0):
+			empty_image = Image.new('RGB',(1,1),(255,255,255))
+			return empty_image, montage_filename
 		filedim = math.sqrt(len(image_paths))
 		if ncols == None:
 			if (filedim%int(filedim) == 0): ncols, nrows = int(filedim),int(filedim)
@@ -48,7 +52,6 @@ class Montages:
 		if ncols == 0: 
 			ncols = 1
 			nrows = len(image_paths)
-
 		if nrows == 0:
 			nrows = 1
 			ncols = len(image_paths)
@@ -73,7 +76,6 @@ class Montages:
 			path_split = path_parent[0].split(self.src_path)[1].split("/")[0]
 			montage_filename = path_split + "_montage"
 			montages_created.append(self.create_montage(path_parent, montage_filename))
-
 		return montages_created
 
 	def read_data(self):
@@ -118,10 +120,12 @@ class Montages:
 			else:
 				path_parents[bin] = [self.image_src_path + row[0] for row in rows if row[1] == bin]
 		montages_created = []
-		for bin in path_parents.keys():
-			montage_filename = "bin_" + str(bin)
-			print("number of images:", len(path_parents[bin]))
-			montages_created.append(self.create_montage(path_parents[bin], montage_filename, ncols = None, nrows = None))
+		for cluster in range(self.ncl):
+			montage_filename = "bin_" + str(cluster)
+			if cluster not in path_parents.keys():
+				path_parents[cluster] = []
+			print("number of images:", len(path_parents[cluster]))
+			montages_created.append(self.create_montage(path_parents[cluster], montage_filename, ncols = None, nrows = None))
 		return montages_created
 
 	def scatter(self, df, img_w = 20000, img_h = 20000, thumb_w = 175, thumb_h = 175, img_paths_col = None, x_col = None, y_col = None):
@@ -143,10 +147,10 @@ class Montages:
 		scaled = np.floor(np.array([ (p / scale) * (w/2-20,h/2-20) + (w/2,h/2) for p in projected_features]))
 		print("number of images", len(image_paths))
 		for i in range(len(image_paths)):
-		  nodeim = Image.open(image_paths[i]) 
-		  nodeim = nodeim.resize((thumb_w,thumb_h))
-		  ns = nodeim.size 
-		  img.paste(nodeim,(int(scaled[i][0]-ns[0]//2),int(scaled[i][1]-ns[1]//2),int(scaled[i][0]+ns[0]//2+1),int(scaled[i][1]+ns[1]//2+1))) 
+			nodeim = Image.open(image_paths[i]) 
+			nodeim = nodeim.resize((thumb_w,thumb_h))
+			ns = nodeim.size 
+			img.paste(nodeim,(int(scaled[i][0]-ns[0]//2),int(scaled[i][1]-ns[1]//2),int(scaled[i][0]+ns[0]//2+1),int(scaled[i][1]+ns[1]//2+1))) 
 
 		return img
 
@@ -191,10 +195,10 @@ class Montages:
 		#getting the total number of bins
 		NumBins = len(bins)
 		#size of each image
-		size = 75
+		size = self.photow
 		size1 = size + 5
 		graphH = size1 * height
-		graphW = size1 * NumBins
+		graphW = size1 * self.ncl
 		#creating the background window
 		img = Image.new('RGB',(graphW,graphH),(0,0,0))
 		SIZES = size, size
@@ -203,11 +207,12 @@ class Montages:
 		for key in bins:
 			theQ = bins[key]
 			#initializing the yCoord as the very bottom of the graph
-			yCoord = graphH
+			yCoord = graphH - size1
 			xCoord = key * size1
 			#while loop to loop through the heapq and paste the images one by one from bottom up
 			while len(theQ) != 0:
 				#getting the image path
+				#print(len(theQ), " queue length")
 				popped = heapq.heappop(theQ)
 				path = popped[1]
 				im = Image.open(path)
