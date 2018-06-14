@@ -4,6 +4,7 @@ Functions for creating Image montages and Image histograms in Python.
 
 Forked by greencodes (Jiaxin Li: jil160@ucsd.edu) to work with python3. 
 
+Fixed to work when data is missing some clusters. montage_manager.Montage object now requires the total number of clusters as input
 ## Installation
 
 Currently pyImagePlot is not pip-installable and you will have to download the entire repo and the dependecies to use. Easiest way to ensure all dependencies are present is to obtain the Anaconda distribution of Python 2.7. Down this distribution from [here](http://continuum.io/downloads).
